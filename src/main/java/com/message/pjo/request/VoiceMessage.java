@@ -5,8 +5,18 @@ public class VoiceMessage extends BaseMessage {
     private String MediaId;  
     // 语音格式  
     private String Format;  
-  
-    public String getMediaId() {  
+    //语音转译内容
+    private String Recognition;
+    
+    public String getRecognition() {
+		return Recognition;
+	}
+
+	public void setRecognition(String recognition) {
+		Recognition = recognition;
+	}
+
+	public String getMediaId() {  
         return MediaId;  
     }  
   

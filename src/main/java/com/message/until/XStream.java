@@ -16,6 +16,20 @@ import com.message.pjo.response.MusicMessage;
 public class XStream {
 	
 	private final static Log log = LogFactory.getLog(XStream.class);
+	
+	/**
+	 * 根据入参 判断是否需要继续下探
+	 * @param clazz
+	 * @return
+	 */
+	public static boolean isDepend(Class clazz){
+		if(!clazz.toString().contains("class")){
+			return false;
+		}else if("String".equals(clazz.getSimpleName())){
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * 根据obj的属性  生成对应的xml格式
@@ -23,29 +37,58 @@ public class XStream {
 	 * @param obj
 	 * @return
 	 */
-	public static String generaterFormateFromClass(Object obj){
+	public static String toXML(Object obj){
 		Class clazz=obj.getClass();
 		Field []fields=clazz.getDeclaredFields();
 		List<String> attributeList=new ArrayList<String>();
+		StringBuffer attributeStatus=new StringBuffer();
 		for(Field field:fields){
-			System.out.println(field.getName()+" ******************* "+field.getType());
-			//field.
 			attributeList.add(field.getName());
+			if (isDepend(field.getType())) {
+				attributeStatus.append("y");
+			}else{
+				attributeStatus.append("n");
+			}
 		}
 		for(Field superfield:clazz.getSuperclass().getDeclaredFields()){
-			System.out.println(superfield.getName()+" ******************* "+superfield.getType());
 			attributeList.add(superfield.getName());
+			if (isDepend(superfield.getType())) {
+				attributeStatus.append("y");
+			}else{
+				attributeStatus.append("n");
+			}
 		}
+		
+		byte[] byteStatus= attributeStatus.toString().getBytes();
+
+		return generatePartInfo(obj, attributeList, byteStatus);
+	}
+	
+	
+	
+	public static String generatePartInfo(Object obj,List<String> attributeList,byte[] byteStatus){
+		String name=obj.getClass().getSimpleName();
 		StringBuffer formate=new StringBuffer();
-		formate.append("<xml>").append("\n");
+		formate.append("<").append(name).append(">").append("\n");
 		int i=1;
 		List<String> methodNames=new ArrayList<String>();
+		int num=1;
 		for(String attribute:attributeList){
-			methodNames.add("get"+StringUtils.capitalise(attribute));
-			formate.append("<").append(attribute).append("><![CDATA[%").append(i).append("$s]]></").append(attribute).append(">\n");
+			if(byteStatus[i-1]==110){//110代表n  121代表y			
+				methodNames.add("get"+StringUtils.capitalise(attribute));
+				formate.append("<").append(attribute).append("><![CDATA[%").append(num).append("$s]]></").append(attribute).append(">\n");
+				num++;
+			}else{
+				try {
+					String[] methods={"get"+StringUtils.capitalise(attribute)};
+					formate .append(toXML(executeNoInputMethod(obj, methods).get(0))).append("\n");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 			i++;
 		}
-		formate.append("</xml>");
+		formate.append("</").append(name).append(">");
 		return String.format(formate.toString(), executeNoInputMethod(obj,methodNames.toArray(new String[]{})).toArray());
 	}
 	
@@ -71,9 +114,14 @@ public class XStream {
 	public static void main(String[] args) {
 		MusicMessage aa=new MusicMessage();
 		Music music=new Music();
+		music.setDescription("this is a papular music");
+		music.setMusicUrl("http://nicaiyacaiyacaiyacai");
 		aa.setMusic(music);
 		aa.setCreateTime(new Date().getTime());
 		aa.setFromUserName("asdfasdfdsafsdf");
-		System.out.println(generaterFormateFromClass(aa));
+		System.out.println(toXML(aa));
+		System.out.println(1458819100);
+		System.out.println(new Date().getTime());
+	
 	}
 }

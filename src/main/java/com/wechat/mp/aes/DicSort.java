@@ -1,4 +1,4 @@
-package com.test.servlet;
+package com.wechat.mp.aes;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -6,8 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class Test {
-	private final static Log log = LogFactory.getLog(Test.class);
+public class DicSort {
+	private final static Log log = LogFactory.getLog(DicSort.class);
 
 	public static String getSHA(String[] needList) {
 		int size=3;

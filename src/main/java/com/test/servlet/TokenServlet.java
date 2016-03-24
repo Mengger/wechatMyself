@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -17,58 +15,34 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 import com.alibaba.fastjson.JSON;
+import com.wechat.mp.aes.DicSort;
 import com.wechat.mp.aes.WXBizMsgCrypt;
 import com.wechat.mp.aes.XMLParse;
 
 public class TokenServlet extends HttpServlet {
 	private final static Log log = LogFactory.getLog(TokenServlet.class);
-	/**
-	 * Constructor of the object.
-	 */
 	public TokenServlet() {
 		super();
 	}
-
-	/**
-	 * Destruction of the servlet. <br>
-	 */
 	public void destroy() {
-		super.destroy(); // Just puts "destroy" string in log
-		// Put your code here
+		super.destroy(); 
 	}
 
-	/**
-	 * The doGet method of the servlet. <br>
-	 *
-	 * This method is called when a form has its tag value method equals to get.
-	 * 
-	 * @param request the request send by the client to the server
-	 * @param response the response send by the server to the client
-	 * @throws ServletException if an error occurred
-	 * @throws IOException if an error occurred
-	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
-			log.error(JSON.toJSONString(request.getParameterMap()));
 			String []readyIn=new String[3];
-			
-			
 			String timeStamp=request.getParameter("timestamp");
 			String nonce=request.getParameter("nonce");
-			
 			readyIn[0]="TokenTest";
 			readyIn[1]=timeStamp;
 			readyIn[2]=nonce;
-			String rtn=Test.getSHA(readyIn);
+			String rtn=DicSort.getSHA(readyIn);
 			String rqu=request.getParameter("signature");
 			if(rqu.equals(rtn)){
 				String tnt=request.getParameter("echostr");
@@ -84,9 +58,6 @@ public class TokenServlet extends HttpServlet {
 					String msgSignature=request.getParameter("msg_signature");
 					String decryMsgInfo=wXBizMsgCrypt.decryptMsg(msgSignature, timeStamp, nonce, readInputStreamString);
 					log.error("********decryMsgInfo************"+decryMsgInfo);
-					
-					
-					
 					
 					InputStream getDecryInput=IOUtils.toInputStream(decryMsgInfo);
 					Map<String, String> getMapInfo=XMLParse.parseXml(getDecryInput);
