@@ -1,6 +1,5 @@
 package com.message.until;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -16,8 +15,7 @@ public class PropertyUntil {
 		String rtn=null;
 		InputStream inputStream=null;        
 		try {
-			System.out.println(System.getProperty("user.dir"));
-			inputStream = new FileInputStream("src/wechat.properties");        
+			inputStream =PropertyUntil.class.getResourceAsStream("wechat.properties");
 			Properties dbProps =  new  Properties();        
 			dbProps.load(inputStream);
 			rtn=String.valueOf(dbProps.get(key));

@@ -9,8 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.message.pjo.response.Music;
-import com.message.pjo.response.MusicMessage;
+import com.message.pjo.response.MusicMessageResponse;
+import com.message.pjo.response.unit.Music;
 
 
 public class XStream {
@@ -64,7 +64,16 @@ public class XStream {
 		return generatePartInfo(obj, attributeList, byteStatus);
 	}
 	
-	
+	public static String replaceHeader(Object obj,String replace){
+		String rtn=toXML(obj);
+		String target=obj.getClass().getSimpleName();
+		int size=target.length();
+		rtn=rtn.substring(size+2);
+		int surplue=rtn.length();
+		rtn=rtn.substring(0,surplue-size-3);
+		System.out.println(target);
+		return "<"+replace+">"+rtn+"</"+replace+">";
+	}
 	
 	public static String generatePartInfo(Object obj,List<String> attributeList,byte[] byteStatus){
 		String name=obj.getClass().getSimpleName();
@@ -81,7 +90,8 @@ public class XStream {
 			}else{
 				try {
 					String[] methods={"get"+StringUtils.capitalise(attribute)};
-					formate .append(toXML(executeNoInputMethod(obj, methods).get(0))).append("\n");
+					
+					formate .append(replaceHeader(executeNoInputMethod(obj, methods).get(0),attribute)).append("\n");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -112,14 +122,14 @@ public class XStream {
 	
 	
 	public static void main(String[] args) {
-		MusicMessage aa=new MusicMessage();
+		MusicMessageResponse aa=new MusicMessageResponse();
 		Music music=new Music();
 		music.setDescription("this is a papular music");
 		music.setMusicUrl("http://nicaiyacaiyacaiyacai");
 		aa.setMusic(music);
 		aa.setCreateTime(new Date().getTime());
 		aa.setFromUserName("asdfasdfdsafsdf");
-		System.out.println(toXML(aa));
+		System.out.println(replaceHeader(aa,"xml"));
 		System.out.println(1458819100);
 		System.out.println(new Date().getTime());
 	

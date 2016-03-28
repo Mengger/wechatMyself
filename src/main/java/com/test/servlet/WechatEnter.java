@@ -1,6 +1,7 @@
 package com.test.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,14 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.alibaba.fastjson.JSON;
-import com.message.pjo.request.BaseMessage;
 import com.message.server.PackAndPrase;
 import com.message.until.PropertyUntil;
-import com.message.until.XStream;
-import com.wechat.mp.aes.AesException;
 import com.wechat.mp.aes.DicSort;
-import com.wechat.mp.aes.WXBizMsgCrypt;
 
 public class WechatEnter extends HttpServlet {
 	private final static Log log = LogFactory.getLog(WechatEnter.class);
@@ -77,16 +73,21 @@ public class WechatEnter extends HttpServlet {
 		
 		//获取消息校验位
 		String signature=request.getParameter("signature");
-		if(generateSignature.equals(signature)){
-			PackAndPrase packAndPrase=new PackAndPrase(request, response);
-			
-			packAndPrase.parse();
-			
-			
-			
-			
-			packAndPrase.sendInfo();
-			
+		try {
+			if(generateSignature.equals(signature)){
+				if(null==request.getParameter("echostr")){
+					PackAndPrase packAndPrase=new PackAndPrase(request, response);
+					packAndPrase.parse();
+					packAndPrase.sendInfo();
+				}else{
+					PrintWriter out = response.getWriter();
+					out.print(request.getParameter("echostr"));
+					out.flush();
+					out.close();
+				}
+			}
+		} catch (Exception e) {
+			log.error("something is worning !",e);
 		}
 	}
 

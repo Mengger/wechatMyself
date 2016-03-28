@@ -1,6 +1,9 @@
 package com.message.pjo.response;
 
-public class MusicMessage extends BaseMessageOut {
+import com.message.pjo.request.BaseMessage;
+import com.message.pjo.response.unit.Music;
+
+public class MusicMessageResponse extends BaseMessage {
 	// 音乐  
     private Music Music;  
   

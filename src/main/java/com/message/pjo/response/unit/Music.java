@@ -1,4 +1,4 @@
-package com.message.pjo.response;
+package com.message.pjo.response.unit;
 
 public class Music {
 	// 音乐名称  
@@ -9,8 +9,18 @@ public class Music {
     private String MusicUrl;  
     // 高质量音乐链接，WIFI环境优先使用该链接播放音乐  
     private String HQMusicUrl;  
-  
-    public String getTitle() {  
+    //缩略图的媒体id，通过素材管理接口上传多媒体文件，得到的id
+    private String ThumbMediaId;
+    
+    public String getThumbMediaId() {
+		return ThumbMediaId;
+	}
+
+	public void setThumbMediaId(String thumbMediaId) {
+		ThumbMediaId = thumbMediaId;
+	}
+
+	public String getTitle() {  
         return Title;  
     }  
   

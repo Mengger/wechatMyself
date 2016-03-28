@@ -20,7 +20,11 @@ import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.wechat.mp.aes.AesException;
 import com.wechat.mp.aes.ByteGroup;
 import com.wechat.mp.aes.PKCS7Encoder;
@@ -43,7 +47,7 @@ import com.wechat.mp.aes.XMLParse;
  * </ol>
  */
 public class WXBizMsgCrypt {
-	
+	private final static Log log = LogFactory.getLog(WXBizMsgCrypt.class);
 	static Charset CHARSET = Charset.forName("utf-8");
 	Base64 base64 = new Base64();
 	byte[] aesKey;
@@ -255,6 +259,11 @@ public class WXBizMsgCrypt {
 			throws AesException {
 		// 密钥，公众账号的app secret
 		// 提取密文
+		/*log.error("msgSignature_______________"+msgSignature);
+		log.error("timeStamp_____________"+timeStamp);
+		log.error("nonce______________"+nonce);
+		log.error(postData);*/
+		
 		Object[] encrypt = XMLParse.extract(postData);
 
 		// 验证安全签名

@@ -44,6 +44,7 @@ public class TokenServlet extends HttpServlet {
 			readyIn[2]=nonce;
 			String rtn=DicSort.getSHA(readyIn);
 			String rqu=request.getParameter("signature");
+			
 			if(rqu.equals(rtn)){
 				String tnt=request.getParameter("echostr");
 				if(null==tnt){

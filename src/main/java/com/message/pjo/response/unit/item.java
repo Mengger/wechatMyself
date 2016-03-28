@@ -1,6 +1,6 @@
-package com.message.pjo.response;
+package com.message.pjo.response.unit;
 
-public class Article {
+public class item {
 	 // 图文消息名称  
     private String Title;  
     // 图文消息描述  

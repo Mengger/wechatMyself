@@ -15,7 +15,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.message.pjo.request.BaseMessage;
+import com.message.pjo.request.ImageMessage;
+import com.message.pjo.response.ImageMessageResponse;
+import com.message.pjo.response.unit.Image;
 import com.message.until.MessageUtil;
 import com.message.until.PropertyUntil;
 import com.message.until.XStream;
@@ -56,12 +60,12 @@ public class PackAndPrase {
 	public BaseMessage parse(){
 		try {
 			wXBizMsgCrypt=new WXBizMsgCrypt(PropertyUntil.get("Token"), PropertyUntil.get("encodingAesKey"), PropertyUntil.get("AppID"));
-			String decryMsgInfo=wXBizMsgCrypt.decryptMsg(request.getParameter("msg_signature"), request.getParameter("timeStamp"), request.getParameter("nonce"), convertStreamToString(request.getInputStream()));
+			String decryMsgInfo=wXBizMsgCrypt.decryptMsg(request.getParameter("msg_signature"), request.getParameter("timestamp"), request.getParameter("nonce"), convertStreamToString(request.getInputStream()));
 			InputStream getDecryInput=IOUtils.toInputStream(decryMsgInfo);
 			Map<String, String> getMapInfo=XMLParse.parseXml(getDecryInput);
 			baseMessage=MessageUtil.messageFactory(getMapInfo);
+			log.error("BaseMessage____"+JSON.toJSONString(baseMessage));
 			return baseMessage;
-			
 		} catch (Exception e) {
 			log.error("获取信息失败",e);
 			e.printStackTrace();
@@ -77,14 +81,36 @@ public class PackAndPrase {
 			baseMessage.setFromUserName(baseMessage.getToUserName());
 			baseMessage.setToUserName(fromName);
 			out = reponse.getWriter();
-			String pln=wXBizMsgCrypt.encryptMsg(XStream.toXML(baseMessage),request.getParameter("timestamp"),request.getParameter("nonce"));
+			
+			String pln=null;
+			if ("image".equals(baseMessage.getMsgType())) {
+				Image image=new Image();
+				image.setMediaId(((ImageMessage) baseMessage).getMediaId());
+				BaseMessage rep=(BaseMessage)baseMessage;
+				
+				log.error("super___________"+JSON.toJSONString(rep));
+				((ImageMessageResponse)rep).setImage(image);
+				log.error("XStream.replaceHeader(ImageMessageResponse)________"+XStream.replaceHeader(rep,"xml"));
+				pln=wXBizMsgCrypt.encryptMsg(XStream.replaceHeader(rep,"xml"),request.getParameter("timestamp"),request.getParameter("nonce"));
+			
+			}else{
+				log.error("XStream.replaceHeader(baseMessage)________"+XStream.replaceHeader(baseMessage,"xml"));
+				pln=wXBizMsgCrypt.encryptMsg(XStream.replaceHeader(baseMessage,"xml"),request.getParameter("timestamp"),request.getParameter("nonce"));
+			}
+			
+			
+			
+			
+			log.error("out_p______"+pln);
 			out.println(pln);
 		} catch (Exception e) {
 			log.error("加密发送信息失败",e);
 			e.printStackTrace();
 		}finally{
-			out.flush();
-			out.close();
+			if(out!=null){				
+				out.flush();
+				out.close();
+			}
 		}
 		
 	}

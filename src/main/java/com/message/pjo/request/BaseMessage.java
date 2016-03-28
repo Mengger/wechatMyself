@@ -1,7 +1,7 @@
 package com.message.pjo.request;
 
 public class BaseMessage {
-	// 开发者微信号  
+	// 目标微信号  
     private String ToUserName;  
     // 发送方帐号（一个OpenID）  
     private String FromUserName;  
