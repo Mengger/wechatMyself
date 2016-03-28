@@ -2,6 +2,7 @@ package com.message.until;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -9,8 +10,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.message.pjo.response.ArticlesMessageResponse;
 import com.message.pjo.response.MusicMessageResponse;
 import com.message.pjo.response.unit.Music;
+import com.message.pjo.response.unit.item;
 
 
 public class XStream {
@@ -23,7 +27,7 @@ public class XStream {
 	 * @return
 	 */
 	public static boolean isDepend(Class clazz){
-		if(!clazz.toString().contains("class")){
+		if(!(clazz.toString().contains("class")||clazz.toString().contains("interface"))){
 			return false;
 		}else if("String".equals(clazz.getSimpleName())){
 			return false;
@@ -65,14 +69,23 @@ public class XStream {
 	}
 	
 	public static String replaceHeader(Object obj,String replace){
-		String rtn=toXML(obj);
-		String target=obj.getClass().getSimpleName();
-		int size=target.length();
-		rtn=rtn.substring(size+2);
-		int surplue=rtn.length();
-		rtn=rtn.substring(0,surplue-size-3);
-		System.out.println(target);
-		return "<"+replace+">"+rtn+"</"+replace+">";
+		String rtn="";
+		if(obj instanceof  java.lang.Iterable){
+			rtn+="<"+replace+">\n";
+			for(Object ooj:((List)obj)){
+				rtn+=toXML(ooj)+"\n";
+			}
+			rtn+="</"+replace+">\n";
+		}else{
+			rtn=toXML(obj);
+			String target=obj.getClass().getSimpleName();
+			int size=target.length();
+			rtn=rtn.substring(size+2);
+			int surplue=rtn.length();
+			rtn=rtn.substring(0,surplue-size-3);
+			rtn="<"+replace+">"+rtn+"</"+replace+">";
+		}
+		return rtn;
 	}
 	
 	public static String generatePartInfo(Object obj,List<String> attributeList,byte[] byteStatus){
@@ -122,16 +135,32 @@ public class XStream {
 	
 	
 	public static void main(String[] args) {
-		MusicMessageResponse aa=new MusicMessageResponse();
-		Music music=new Music();
-		music.setDescription("this is a papular music");
-		music.setMusicUrl("http://nicaiyacaiyacaiyacai");
-		aa.setMusic(music);
-		aa.setCreateTime(new Date().getTime());
-		aa.setFromUserName("asdfasdfdsafsdf");
-		System.out.println(replaceHeader(aa,"xml"));
-		System.out.println(1458819100);
-		System.out.println(new Date().getTime());
+		ArticlesMessageResponse rep=new ArticlesMessageResponse();
+		rep.setCreateTime(new Date().getTime());
+		rep.setFromUserName("FromUser");
+		rep.setMsgId(1945641652L);
+		rep.setMsgType("TEXT");
+		rep.setToUserName("TOUser");
+		
+		item item=new item();
+		item.setTitle("This is a test ,don't care");
+		item.setPicUrl("http://inews.gtimg.com/newsapp_bt/0/227088706/1000");
+		item.setDescription("I said this is a test ,don't care!");
+		item.setUrl("http://view.inews.qq.com/a/NEW2016032805019904");
+		
+		item item1=new item();
+		item1.setTitle("This is a test ,don't care111111111111111111");
+		item1.setPicUrl("http://inews.gtimg.com/newsapp_bt/0/227088706/1000");
+		item1.setDescription("I said this is a test ,don't care!");
+		item1.setUrl("http://view.inews.qq.com/a/NEW2016032805019904");
+		
+		List<item> aa=new ArrayList<item>();
+		aa.add(item);
+		aa.add(item1);
+		rep.setArticleCount(2);
+		rep.setArticles(aa);
+		
+		System.out.println(replaceHeader(rep,"xml"));
 	
 	}
 }

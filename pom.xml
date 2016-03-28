@@ -19,7 +19,7 @@
 	<!-- 依赖包配置 -->
 	<dependencies>
 		<!-- mybatis配置 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
 			<version>3.3.0</version>
@@ -31,19 +31,19 @@
 			<version>1.2.3</version>
 		</dependency>
 
-		<!-- 连接池 -->
+		连接池
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
 			<version>1.4</version>
 		</dependency>
 
-		<!-- mysql连接 -->
+		mysql连接
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.37</version>
-		</dependency>
+		</dependency> -->
 		<!-- json转换工具 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -66,12 +66,12 @@
 		</dependency>
 
 		<!-- junit测试依赖包 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency> -->
 
 		<!-- struts2 依赖包 -->
 		<dependency>

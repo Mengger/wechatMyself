@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +20,11 @@ import org.apache.commons.logging.LogFactory;
 import com.alibaba.fastjson.JSON;
 import com.message.pjo.request.BaseMessage;
 import com.message.pjo.request.ImageMessage;
+import com.message.pjo.request.TextMessage;
+import com.message.pjo.response.ArticlesMessageResponse;
 import com.message.pjo.response.ImageMessageResponse;
 import com.message.pjo.response.unit.Image;
+import com.message.pjo.response.unit.item;
 import com.message.until.MessageUtil;
 import com.message.until.PropertyUntil;
 import com.message.until.XStream;
@@ -86,13 +91,43 @@ public class PackAndPrase {
 			if ("image".equals(baseMessage.getMsgType())) {
 				Image image=new Image();
 				image.setMediaId(((ImageMessage) baseMessage).getMediaId());
-				BaseMessage rep=(BaseMessage)baseMessage;
+				ImageMessageResponse rep=new ImageMessageResponse();
+				rep.setCreateTime(baseMessage.getCreateTime());
+				rep.setFromUserName(baseMessage.getFromUserName());
+				rep.setMsgId(baseMessage.getMsgId());
+				rep.setMsgType(baseMessage.getMsgType());
+				rep.setToUserName(baseMessage.getToUserName());
+				rep.setImage(image);
 				
 				log.error("super___________"+JSON.toJSONString(rep));
 				((ImageMessageResponse)rep).setImage(image);
 				log.error("XStream.replaceHeader(ImageMessageResponse)________"+XStream.replaceHeader(rep,"xml"));
 				pln=wXBizMsgCrypt.encryptMsg(XStream.replaceHeader(rep,"xml"),request.getParameter("timestamp"),request.getParameter("nonce"));
 			
+			}else if("text".equals(baseMessage.getMsgType())&&"笑话".equals(((TextMessage)baseMessage).getContent())){
+				ArticlesMessageResponse rep=new ArticlesMessageResponse();
+				rep.setCreateTime(baseMessage.getCreateTime());
+				rep.setFromUserName(baseMessage.getFromUserName());
+				rep.setMsgId(baseMessage.getMsgId());
+				rep.setMsgType("news");
+				rep.setToUserName(baseMessage.getToUserName());
+				
+				item item=new item();
+				item.setTitle("this is a test ,don't care");
+				item.setPicUrl("http://139.129.93.111/photo/1000.jpg");
+				item.setDescription("I said this is a test ,don't care!");
+				item.setUrl("http://view.inews.qq.com/a/NEW2016032805019904");
+				
+				List<item> aa=new ArrayList<item>();
+				aa.add(item);
+				
+				rep.setArticleCount(1);
+				rep.setArticles(aa);
+				
+				log.error("XStream.replaceHeader(ImageMessageResponse)________"+XStream.replaceHeader(rep,"xml"));
+				pln=wXBizMsgCrypt.encryptMsg(XStream.replaceHeader(rep,"xml"),request.getParameter("timestamp"),request.getParameter("nonce"));
+		
+				
 			}else{
 				log.error("XStream.replaceHeader(baseMessage)________"+XStream.replaceHeader(baseMessage,"xml"));
 				pln=wXBizMsgCrypt.encryptMsg(XStream.replaceHeader(baseMessage,"xml"),request.getParameter("timestamp"),request.getParameter("nonce"));
