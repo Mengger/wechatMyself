@@ -124,7 +124,7 @@ public class PackAndPrase {
 				rep.setArticleCount(1);
 				rep.setArticles(aa);
 				
-				log.error("XStream.replaceHeader(ImageMessageResponse)________"+XStream.replaceHeader(rep,"xml"));
+				log.error("XStream.replaceHeader(NewsMessageResponse)________"+XStream.replaceHeader(rep,"xml"));
 				pln=wXBizMsgCrypt.encryptMsg(XStream.replaceHeader(rep,"xml"),request.getParameter("timestamp"),request.getParameter("nonce"));
 		
 				

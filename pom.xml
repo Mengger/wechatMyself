@@ -7,7 +7,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>wechatMyself</name>
   
-<properties>
+	<properties>
 		<struts.version>2.3.24.1</struts.version>
 		<struts.d.javassist>3.12.1.GA</struts.d.javassist>
 		<spring.version>3.0.5.RELEASE</spring.version>
@@ -45,6 +45,14 @@
 			<version>5.1.37</version>
 		</dependency> -->
 		<!-- json转换工具 -->
+		
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
@@ -191,7 +199,17 @@
 		</dependency>
 				
 	</dependencies>
-  <build>
-    <finalName>wechatMyself</finalName>
-  </build>
-</project>
+	
+	 <build>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-compiler-plugin</artifactId>
+	        <configuration>
+	          <source>1.5</source>
+	          <target>1.5</target>
+	        </configuration>
+	      </plugin>
+	    </plugins>
+	  </build>
+  </project>
